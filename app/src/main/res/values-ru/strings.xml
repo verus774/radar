@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Радар Минск</string>
+    <string name="err_connection">Ошибка подключения</string>
+    <string name="err_parse">Ошибка парсинга</string>
+    <string name="ok_updated">Обновлено</string>
+    <string name="progress_dialog_message">Загрузка...</string>
+    <string name="progress_dialog_title">Обработка данных</string>
+    <string name="title_activity_radars_list">Выбор радара</string>
+    <string name="btn_parse">Обновить</string>
+    <string name="action_settings">Настройки</string>
+    <string name="add_widget">Сохранить</string>
+    <string name="appwidget_text">Радар Минск</string>
+</resources>

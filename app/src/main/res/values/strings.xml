@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Radar Minsk</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="btn_parse">Update</string>
+    <string name="progress_dialog_title">Data processing</string>
+    <string name="progress_dialog_message">Loading...</string>
+    <string name="title_activity_radars_list">Select radar</string>
+
+    <!-- ERRORS -->
+    <string name="err_connection">Connection error</string>
+    <string name="err_parse">Parsing error</string>
+    <!-- ====== -->
+
+    <string name="appwidget_text">Radar Minsk</string>
+    <string name="add_widget">Save</string>
+    <string name="ok_updated">Updated</string>
+
+</resources>
