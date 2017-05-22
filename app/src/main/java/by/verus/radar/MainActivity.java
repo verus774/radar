@@ -10,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private PhotoViewAttacher mAttacher;
     private CoordinatorLayout mCoordinatorLayout;
 
@@ -47,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mAttacher = new PhotoViewAttacher(imageView);
-        mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isConnected()) {
+                if (isConnected()) {
                     loadRadarImg(Radar.RADAR_GIF_URL);
                 } else {
                     showErrorSnackbar(getString(R.string.err_connection));
@@ -61,11 +63,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if(isConnected()) {
+        if (isConnected()) {
             loadRadarImg(Radar.RADAR_IMG_URL);
         } else {
             showErrorSnackbar(getString(R.string.err_connection));
         }
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadRadarImg(Radar.RADAR_IMG_URL);
+            }
+        });
     }
 
     @Override
@@ -111,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         mProgressBar.setVisibility(View.GONE);
+                        mSwipeRefreshLayout.setRefreshing(false);
                         showErrorSnackbar(getString(R.string.err_connection));
                         return false;
                     }
@@ -118,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         mProgressBar.setVisibility(View.GONE);
+                        mSwipeRefreshLayout.setRefreshing(false);
                         showSuccessSnackbar(getString(R.string.ok_updated));
                         return false;
                     }
