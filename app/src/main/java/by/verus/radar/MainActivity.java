@@ -1,9 +1,11 @@
 package by.verus.radar;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,16 +16,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
+    private ProgressBar mProgressBar;
     private PhotoViewAttacher mAttacher;
     private CoordinatorLayout mCoordinatorLayout;
 
@@ -37,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         imageView = (ImageView) findViewById(R.id.imageView);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mAttacher = new PhotoViewAttacher(imageView);
         mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
 
@@ -46,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isConnected()) {
                     loadRadarImg(Radar.RADAR_GIF_URL);
-                    showSuccessSnackbar(getString(R.string.ok_updated));
                 } else {
                     showErrorSnackbar(getString(R.string.err_connection));
                 }
@@ -55,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(isConnected()) {
             loadRadarImg(Radar.RADAR_IMG_URL);
-            showSuccessSnackbar(getString(R.string.ok_updated));
         } else {
             showErrorSnackbar(getString(R.string.err_connection));
         }
@@ -93,11 +100,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadRadarImg(String imgUrl) {
+        mProgressBar.setVisibility(View.VISIBLE);
+
         RequestOptions options = new RequestOptions()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE);
         Glide.with(this)
                 .load(imgUrl)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        mProgressBar.setVisibility(View.GONE);
+                        showErrorSnackbar(getString(R.string.err_connection));
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        mProgressBar.setVisibility(View.GONE);
+                        showSuccessSnackbar(getString(R.string.ok_updated));
+                        return false;
+                    }
+                })
                 .apply(options)
                 .into(imageView);
     }
