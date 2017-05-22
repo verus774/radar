@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -44,17 +46,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isConnected()) {
                     loadRadarImg(Radar.RADAR_GIF_URL);
-                    Snackbar.make(view, R.string.ok_updated, Snackbar.LENGTH_SHORT).show();
+                    showSuccessSnackbar(getString(R.string.ok_updated));
                 } else {
-                    showError(getString(R.string.err_connection));
+                    showErrorSnackbar(getString(R.string.err_connection));
                 }
             }
         });
 
         if(isConnected()) {
             loadRadarImg(Radar.RADAR_IMG_URL);
+            showSuccessSnackbar(getString(R.string.ok_updated));
         } else {
-            showError(getString(R.string.err_connection));
+            showErrorSnackbar(getString(R.string.err_connection));
         }
     }
 
@@ -90,16 +93,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadRadarImg(String imgUrl) {
+        RequestOptions options = new RequestOptions()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE);
         Glide.with(this)
                 .load(imgUrl)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .apply(options)
                 .into(imageView);
     }
 
-    public void showError(String error) {
-        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, error, Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(getResources().getColor(R.color.colorError));
+    public void showSuccessSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.snackbar_success));
+        snackbar.show();
+    }
+
+    public void showErrorSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.snackbar_error));
         snackbar.show();
     }
 

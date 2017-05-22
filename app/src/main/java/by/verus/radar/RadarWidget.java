@@ -11,6 +11,7 @@ import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.AppWidgetTarget;
 
 import java.util.Random;
@@ -36,7 +37,7 @@ public class RadarWidget extends AppWidgetProvider {
         }*/
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.radar_widget);
-        appWidgetTarget = new AppWidgetTarget( context, views, R.id.iv, appWidgetIds );
+        appWidgetTarget = new AppWidgetTarget(context, R.id.iv, views, appWidgetIds);
 
         loadRadarImg(context, Radar.RADAR_IMG_URL, appWidgetTarget);
 
@@ -66,7 +67,7 @@ public class RadarWidget extends AppWidgetProvider {
             ComponentName widget = new ComponentName(context, RadarWidget.class);
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.radar_widget);
             int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(widget);
-            appWidgetTarget = new AppWidgetTarget( context, views, R.id.iv, appWidgetIds );
+            appWidgetTarget = new AppWidgetTarget(context, R.id.iv, views, appWidgetIds);
 
             loadRadarImg(context, Radar.RADAR_IMG_URL, appWidgetTarget);
 
@@ -75,11 +76,13 @@ public class RadarWidget extends AppWidgetProvider {
     }
 
     private void loadRadarImg(Context context, String imgUrl, AppWidgetTarget appWidgetTarget) {
-        Glide.with(context)
-                .load(imgUrl)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+        RequestOptions options = new RequestOptions()
                 .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE);
+        Glide.with(context)
+                .asBitmap()
+                .load(imgUrl)
+                .apply(options)
                 .into(appWidgetTarget);
     }
 

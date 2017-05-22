@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FFC107</color>
 
-    <color name="colorError">#F44336</color>
+    <color name="snackbar_error">#F44336</color>
+    <color name="snackbar_success">#4CAF50</color>
 </resources>
