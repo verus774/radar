@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
@@ -26,15 +25,14 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.github.chrisbanes.photoview.PhotoView;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView imageView;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private PhotoViewAttacher mAttacher;
+    private PhotoView photoView;
     private CoordinatorLayout mCoordinatorLayout;
 
     public static final String TAG = "myTag";
@@ -46,9 +44,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        imageView = (ImageView) findViewById(R.id.imageView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mAttacher = new PhotoViewAttacher(imageView);
+        photoView = findViewById(R.id.photo_view);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -136,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .apply(options)
-                .into(imageView);
+                .into(photoView);
     }
 
     public void showSuccessSnackbar(String message) {
